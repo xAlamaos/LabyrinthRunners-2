@@ -10,7 +10,7 @@ class Wall(pygame.sprite.Sprite):
         :param pos_x: A coordenada x da parede
         :param pos_y: A coordenada y da parede
         :param w_size: O tamanho da parede
-        :param groups: grupo(s) ao(s) qual(is) este sprite pertence
+        :param groups: grupo(s) ao(s) qual(is) este ‘sprite’ pertence
         """
         super().__init__(*groups)
         # Carrega a imagem da parede e dimensione-a conforme o tamanho da parede

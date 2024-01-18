@@ -9,7 +9,7 @@ class GameMech:
     def __init__(self, x_max: int = 20, y_max: int = 20) -> None:
         """
         Cria um dicionário onde cada posição manterá os elementos que estão em cada posição e um dicionário com
-        informações do jogador (nome, nr. de pontos, etc.)
+        informações do jogador (nome, n.º de pontos, etc.)
         :param x_max: Recebe um valor 'int' no eixo x que determinará o comprimento do tabuleiro nesse mesmo eixo.
         :param y_max: Recebe um valor 'int' no eixo y que determinará o comprimento do tabuleiro nesse mesmo eixo.
         """
@@ -100,7 +100,7 @@ class GameMech:
         :param types:
         :param x: Valor de x a verificar
         :param y: Valor de y a verificar
-        :return: Verdadeiro se houver um obstáculo do tipo dado na posição dada, Falso caso contrário
+        :return: Verdadeiro caso tenha um obstáculo do tipo dado na posição dada, Falso caso contrário
         """
         for e in self.world[(x, y)]:
             if e[0] == 'obstacle' and e[1] == types:
@@ -186,7 +186,7 @@ class GameMech:
         Esta função executa um movimento de um jogador no jogo, atualizando a posição do jogador no mundo
          e retornando as novas coordenadas de posição.
         :param move: Movimento a ser executado
-        :param types: O tipo de objeto a ser movido (por exemplo, jogador, item, etc.)
+        :param types: O tipo de objeto a ser movido (por exemplo, jogador, ‘item’, etc.)
         :param nr_player: O número do jogador a ser movido
         :return: um tuplo com as novas coordenadas de posição x e y do jogador
         """

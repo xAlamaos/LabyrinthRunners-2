@@ -14,7 +14,7 @@ def main():
     stub = StubClient()
     player_id = stub.add_player(player_name)
     # Cria uma instância da classe GameUI, passando o stub como parâmetro
-    ui = GameUI(stub, player_id,player_name)
+    ui = GameUI(stub, player_id, player_name)
     # Inicia a User Interface
     ui.run()
 

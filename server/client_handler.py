@@ -5,7 +5,6 @@ from game_mech import GameMech
 
 
 class ClientHandler:
-
     def __init__(self, gm_obj: GameMech):
         self.gm = gm_obj
         self.lock = threading.Lock()

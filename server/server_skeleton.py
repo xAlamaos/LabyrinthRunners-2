@@ -9,7 +9,7 @@ import concurrent.futures
 from client_handler import ClientHandler
 
 
-# Está no lado do servidor: Skeleton to user ‘interface’ (permite ter informação de como comunicar com o cliente)
+# Está no lado do servidor: Skeleton to ‘user’ ‘interface’ (permite ter informação de como comunicar com o cliente)
 class SkeletonServer:
     def __init__(self, gm_obj: GameMech):
         """
