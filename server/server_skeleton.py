@@ -25,7 +25,7 @@ class SkeletonServer:
     def run(self):
         while not self.stop:
             socket_client, address = self.s.accept()
-            # Create an instance of the ClientHandler class and pass the client socket
+            # Create an instance of the ClientHandler class and pass the clientPlayer socket
             client_handler = ClientHandler(self.gm)
             client_thread = threading.Thread(target=client_handler.handle_client, args=(socket_client,))
             client_thread.start()
