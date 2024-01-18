@@ -23,22 +23,22 @@ class GameUI(object):
         self.screen = pygame.display.set_mode((self.width, self.height))
         pygame.display.set_caption("Labyrinth Runners - Player: " + player_name)
         self.clock = pygame.time.Clock()
-        # Cores RGB
         self.white = (255, 255, 255)
         self.black = (0, 0, 0)
-        # Grid
         self.grid_size = grid_size
-        grid_colour = self.black
-        # Cria o Fundo
         self.background = pygame.Surface(self.screen.get_size())
         self.background = self.background.convert()
         self.background.fill(self.white)
         self.screen.blit(self.background, (0, 0))
-        self.draw_grid(self.black)
+
         self.player_id = player_id
         self.player_name = player_name
-        self.players = pygame.sprite.LayeredDirty()  # Initialize self.players
+        self.players = pygame.sprite.LayeredDirty()
         self.players_dict = {}
+        self.visited_y_coords = set()
+
+        self.draw_grid(self.black)  # Correct placement of draw_grid call
+
 
     def draw_grid(self, colour: tuple):
         """
@@ -46,10 +46,17 @@ class GameUI(object):
         :param colour: A cor das linhas de grelha
         :return: None
         """
+        current_player_y = None
+        if self.player_id in self.players_dict:
+            current_player_y = self.players_dict[self.player_id].rect.y // self.grid_size
+
         for x in range(0, self.x_max):
-            pygame.draw.line(self.screen, colour, (x * self.grid_size, 0), (x * self.grid_size, self.height))
-        for y in range(0, self.y_max):
-            pygame.draw.line(self.screen, colour, (0, y * self.grid_size), (self.width, y * self.grid_size))
+            for y in range(0, self.y_max):
+                if current_player_y is not None and (y in self.visited_y_coords or y == current_player_y):
+                    pygame.draw.line(self.screen, colour, (x * self.grid_size, y * self.grid_size),
+                                     ((x + 1) * self.grid_size, y * self.grid_size))
+                    pygame.draw.line(self.screen, colour, (x * self.grid_size, y * self.grid_size),
+                                     (x * self.grid_size, (y + 1) * self.grid_size))
 
     def set_players(self):
         """
@@ -126,6 +133,10 @@ class GameUI(object):
         while not end:
 
             game_over, winner = self.stub.get_game_status()
+
+            # Update visited Y-coordinates
+            for player in self.players_dict.values():
+                self.visited_y_coords.add(player.rect.y // self.grid_size)
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
