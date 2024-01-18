@@ -35,12 +35,6 @@ class GameUI(object):
         self.background.fill(self.white)
         self.screen.blit(self.background, (0, 0))
         self.draw_grid(self.black)
-
-        # Crie uma superfície para esconder tudo fora do raio do jogador
-        self.hide_surface = pygame.Surface((self.width, self.height), pygame.SRCALPHA)
-        self.hide_surface.fill((255, 255, 255, 255))
-        pygame.display.update()
-
         self.player_id = player_id
         self.player_name = player_name
         self.players = pygame.sprite.LayeredDirty()  # Initialize self.players
@@ -84,20 +78,6 @@ class GameUI(object):
                     self.players_dict.pop(nr)
 
         print(f"Players: {self.pl}")
-
-    def draw_darkness(self):
-        """
-        Obscurece o mapa em redor do jogador
-        :return: None
-        """
-
-        self.hide_surface.fill((0, 0, 0, 255))
-        p = self.stub.get_players()
-        for player, data in p.items():
-            circle_pos = (data[1][0] * self.grid_size, data[1][1] * self.grid_size)
-            pygame.draw.circle(self.hide_surface, (255, 255, 255, 0), circle_pos, data[3])
-            self.hide_surface.set_clip(None)
-        self.screen.blit(self.hide_surface, (0, 0), special_flags=pygame.BLEND_RGBA_MIN)
 
     def set_walls(self, wall_size: int):
         """
@@ -172,7 +152,6 @@ class GameUI(object):
                 self.players.update(self.stub)
                 self.players.draw(self.screen)
                 self.draw_grid(self.black)
-                self.draw_darkness()
                 pygame.display.flip()
                 self.players.clear(self.screen, self.background)
                 self.screen.fill((200, 200, 200))
