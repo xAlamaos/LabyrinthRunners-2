@@ -37,7 +37,7 @@ class GameUI(object):
         self.players_dict = {}
         self.visited_y_coords = set()
 
-        self.draw_grid(self.black)  # Correct placement of draw_grid call
+        self.draw_grid(self.black)
 
 
     def draw_grid(self, colour: tuple):
