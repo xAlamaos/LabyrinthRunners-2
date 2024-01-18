@@ -52,8 +52,11 @@ class GameUI(object):
                                      ((x + 1) * self.grid_size, y * self.grid_size))
                     pygame.draw.line(self.screen, colour, (x * self.grid_size, y * self.grid_size),
                                      (x * self.grid_size, (y + 1) * self.grid_size))
-                elif current_player_y is not None and (y in self.visited_y_coords or y == current_player_y):
-                    # Draw grid lines for visited and current Y-coordinates
+                elif current_player_y is not None and (y in self.visited_y_coords or
+                                                       y == current_player_y or
+                                                       y == current_player_y - 1 or
+                                                       y == current_player_y + 1):
+                    # Draw grid lines for visited, current, and adjacent Y-coordinates
                     pygame.draw.line(self.screen, colour, (x * self.grid_size, y * self.grid_size),
                                      ((x + 1) * self.grid_size, y * self.grid_size))
                     pygame.draw.line(self.screen, colour, (x * self.grid_size, y * self.grid_size),
@@ -64,6 +67,7 @@ class GameUI(object):
                     dark_surface.set_alpha(255)  # Adjust alpha for darkness intensity
                     dark_surface.fill((0, 0, 0))  # Black color
                     self.screen.blit(dark_surface, (x * self.grid_size, y * self.grid_size))
+
 
     def set_players(self):
         """
@@ -143,7 +147,8 @@ class GameUI(object):
 
             # Update visited Y-coordinates
             for player in self.players_dict.values():
-                self.visited_y_coords.add(player.rect.y // self.grid_size)
+                player_y = player.rect.y // self.grid_size
+                self.visited_y_coords.update({player_y, player_y - 1, player_y + 1})
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
