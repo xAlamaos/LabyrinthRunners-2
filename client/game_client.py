@@ -21,7 +21,7 @@ class GameUI(object):
         self.stub = stub
         self.width, self.height = self.x_max * grid_size, self.y_max * grid_size
         self.screen = pygame.display.set_mode((self.width, self.height))
-        pygame.display.set_caption("Labyrinth Runners - Player: " + player_name)
+        pygame.display.set_caption("Labyrinth Runners 2 - Player: " + player_name)
         self.clock = pygame.time.Clock()
         self.white = (255, 255, 255)
         self.black = (0, 0, 0)
