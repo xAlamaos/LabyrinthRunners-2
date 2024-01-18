@@ -39,24 +39,25 @@ class GameUI(object):
 
         self.draw_grid(self.black)
 
-
     def draw_grid(self, colour: tuple):
-        """
-        Desenhe a grelha no ecrã.
-        :param colour: A cor das linhas de grelha
-        :return: None
-        """
         current_player_y = None
         if self.player_id in self.players_dict:
             current_player_y = self.players_dict[self.player_id].rect.y // self.grid_size
 
         for x in range(0, self.x_max):
             for y in range(0, self.y_max):
+                # Draw grid lines
                 if current_player_y is not None and (y in self.visited_y_coords or y == current_player_y):
                     pygame.draw.line(self.screen, colour, (x * self.grid_size, y * self.grid_size),
                                      ((x + 1) * self.grid_size, y * self.grid_size))
                     pygame.draw.line(self.screen, colour, (x * self.grid_size, y * self.grid_size),
                                      (x * self.grid_size, (y + 1) * self.grid_size))
+                else:
+                    # Draw darkness
+                    dark_surface = pygame.Surface((self.grid_size, self.grid_size))
+                    dark_surface.set_alpha(255)  # Adjust alpha for darkness intensity
+                    dark_surface.fill((0, 0, 0))  # Black color
+                    self.screen.blit(dark_surface, (x * self.grid_size, y * self.grid_size))
 
     def set_players(self):
         """
