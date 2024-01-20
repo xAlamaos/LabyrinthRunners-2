@@ -68,7 +68,6 @@ class GameUI(object):
                     dark_surface.fill((0, 0, 0))  # Black color
                     self.screen.blit(dark_surface, (x * self.grid_size, y * self.grid_size))
 
-
     def set_players(self):
         """
         Coloca os jogadores no ecrã
