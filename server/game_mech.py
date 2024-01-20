@@ -3,10 +3,13 @@ import random
 from maze import MazeGenerator
 import time
 import const as co
+import json
+from datetime import datetime
+import os
 
 
 class GameMech:
-    def __init__(self, x_max: int = 20, y_max: int = 20) -> None:
+    def __init__(self, x_max: int = 6, y_max: int = 6) -> None:
         """
         Cria um dicionário onde cada posição manterá os elementos que estão em cada posição e um dicionário com
         informações do jogador (nome, n.º de pontos, etc.)
@@ -36,6 +39,7 @@ class GameMech:
         self.counting = 0
         self.game_over = False
         self.winner = None
+        self.finish = None
 
     def add_obstacle(self, types: str, x_pos: int, y_pos: int) -> bool:
         """
@@ -89,10 +93,11 @@ class GameMech:
         # Choose a random cell from the last row or column that isn't a wall
         potential_finish_cells = last_row + last_column
         potential_finish_cells = [cell for cell in potential_finish_cells if not self.is_obstacle("wall", *cell)]
-        
-        self.finish = random.choice(potential_finish_cells) if potential_finish_cells else None
 
+        self.finish = random.choice(potential_finish_cells) if potential_finish_cells else None
         print(self.finish)
+
+        self.save_maze_to_file()
 
     def is_obstacle(self, types, x, y):
         """
@@ -297,3 +302,11 @@ class GameMech:
 
     def get_game_status(self):
         return self.game_over, self.winner
+
+    def save_maze_to_file(self):
+        maze_data = {f"{x},{y}": "A" if (x, y) == (1, 1) else "P" if (x, y) == self.finish else (
+            "1" if self.is_obstacle("wall", x, y) else "0") for x in range(self.x_max) for y in range(self.y_max)}
+        filename = f"Mazes/maze_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+        os.makedirs(os.path.dirname(filename), exist_ok=True)
+        with open(filename, 'w') as file:
+            json.dump(maze_data, file, indent=4)

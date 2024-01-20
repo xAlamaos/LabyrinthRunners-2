@@ -46,14 +46,23 @@ class GameUI(object):
 
         for x in range(0, self.x_max):
             for y in range(0, self.y_max):
-                # Draw grid lines
-                if current_player_y is not None and (y in self.visited_y_coords or y == current_player_y):
+                # Always draw the exterior walls
+                if x == 0 or y == 0 or x == self.x_max - 1 or y == self.y_max - 1:
+                    pygame.draw.line(self.screen, colour, (x * self.grid_size, y * self.grid_size),
+                                     ((x + 1) * self.grid_size, y * self.grid_size))
+                    pygame.draw.line(self.screen, colour, (x * self.grid_size, y * self.grid_size),
+                                     (x * self.grid_size, (y + 1) * self.grid_size))
+                elif current_player_y is not None and (y in self.visited_y_coords or
+                                                       y == current_player_y or
+                                                       y == current_player_y - 1 or
+                                                       y == current_player_y + 1):
+                    # Draw grid lines for visited, current, and adjacent Y-coordinates
                     pygame.draw.line(self.screen, colour, (x * self.grid_size, y * self.grid_size),
                                      ((x + 1) * self.grid_size, y * self.grid_size))
                     pygame.draw.line(self.screen, colour, (x * self.grid_size, y * self.grid_size),
                                      (x * self.grid_size, (y + 1) * self.grid_size))
                 else:
-                    # Draw darkness
+                    # Draw darkness for unvisited cells
                     dark_surface = pygame.Surface((self.grid_size, self.grid_size))
                     dark_surface.set_alpha(255)  # Adjust alpha for darkness intensity
                     dark_surface.fill((0, 0, 0))  # Black color
@@ -137,7 +146,8 @@ class GameUI(object):
 
             # Update visited Y-coordinates
             for player in self.players_dict.values():
-                self.visited_y_coords.add(player.rect.y // self.grid_size)
+                player_y = player.rect.y // self.grid_size
+                self.visited_y_coords.update({player_y, player_y - 1, player_y + 1})
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
