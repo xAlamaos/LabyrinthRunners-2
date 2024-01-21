@@ -288,9 +288,22 @@ class GameMech:
         return self.game_over, self.winner
 
     def save_maze_to_file(self):
-        maze_data = {f"{x},{y}": "A" if (x, y) == (1, 1) else "P" if (x, y) == self.finish else (
-            "1" if self.is_obstacle("wall", x, y) else "0") for x in range(self.x_max) for y in range(self.y_max)}
-        filename = f"Mazes/maze_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
-        os.makedirs(os.path.dirname(filename), exist_ok=True)
+        maze_data = self.prepare_maze_data()
+        history_folder = os.path.join(os.path.dirname(__file__), "MazeHistory")
+        os.makedirs(history_folder, exist_ok=True)
+        filename = os.path.join(history_folder, f"maze_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json")
         with open(filename, 'w') as file:
+            json.dump(maze_data, file, indent=4)
+
+        self.save_last_maze(maze_data)
+
+    def prepare_maze_data(self):
+        return {f"{x},{y}": "A" if (x, y) == (1, 1) else "P" if (x, y) == self.finish else (
+            "1" if self.is_obstacle("wall", x, y) else "0") for x in range(self.x_max) for y in range(self.y_max)}
+
+    def save_last_maze(self, maze_data):
+        last_maze_file = os.path.join(os.path.dirname(__file__), "last_maze.json")
+        if os.path.exists(last_maze_file):
+            os.remove(last_maze_file)
+        with open(last_maze_file, 'w') as file:
             json.dump(maze_data, file, indent=4)
