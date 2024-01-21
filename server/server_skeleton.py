@@ -31,4 +31,3 @@ class SkeletonServer:
             client_thread.start()
 
         self.s.close()
-        

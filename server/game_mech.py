@@ -3,6 +3,9 @@ import random
 from maze import MazeGenerator
 import time
 import const as co
+import json
+from datetime import datetime
+import os
 
 
 class GameMech:
@@ -50,7 +53,7 @@ class GameMech:
         self.world[(x_pos, y_pos)].append(['obstacle', types, nr_obstacle, (x_pos, y_pos)])
         self.nr_obstacles += 1
         return True
-        
+
     def create_world(self):
         """
         Define o mundo inicial com a posição dos obstáculos
@@ -61,7 +64,7 @@ class GameMech:
 
         last_row = []
         last_column = []
-                
+
         for x in range(self.x_max):
             for y in range(self.y_max):
                 if grid[x][y] == 1:
@@ -76,8 +79,9 @@ class GameMech:
         potential_finish_cells = [cell for cell in potential_finish_cells if not self.is_obstacle("wall", *cell)]
 
         self.finish = random.choice(potential_finish_cells) if potential_finish_cells else None
-
         print(self.finish)
+
+        self.save_maze_to_file()
 
     def is_obstacle(self, types, x, y):
         """
@@ -198,16 +202,16 @@ class GameMech:
                 if self.players[nr_player][1] == self.finish:
                     self.game_over = True
                     self.winner = nr_player
-                    return new_pos_x, new_pos_y                 
+                    return new_pos_x, new_pos_y
 
-                # Movimenta o Jogador à Esquerda
+                    # Movimenta o Jogador à Esquerda
                 if move == co.M_LEFT:
                     # Adquire a posição atual do jogador
                     # Nova posição do jogador
                     new_pos_x = pos_x - 1
                     new_pos_y = pos_y
                     # Se houver um obstáculo
-                    print(f"is obstacle: {self.is_obstacle('wall',new_pos_x,new_pos_y)}")
+                    print(f"is obstacle: {self.is_obstacle('wall', new_pos_x, new_pos_y)}")
                     if self.is_obstacle('wall', new_pos_x, new_pos_y):
                         new_pos_x = pos_x
 
@@ -216,7 +220,7 @@ class GameMech:
                     # Nova Posição
                     new_pos_x = pos_x + 1
                     new_pos_y = pos_y
-                    print(f"is obstacle: {self.is_obstacle('wall',new_pos_x,new_pos_y)}")
+                    print(f"is obstacle: {self.is_obstacle('wall', new_pos_x, new_pos_y)}")
                     if self.is_obstacle('wall', new_pos_x, new_pos_y):
                         new_pos_x = pos_x
 
@@ -225,7 +229,7 @@ class GameMech:
                     # Nova Posição
                     new_pos_y = pos_y - 1
                     new_pos_x = pos_x
-                    print(f"is obstacle: {self.is_obstacle('wall',new_pos_x,new_pos_y)}")
+                    print(f"is obstacle: {self.is_obstacle('wall', new_pos_x, new_pos_y)}")
                     if self.is_obstacle('wall', new_pos_x, new_pos_y):
                         new_pos_y = pos_y
 
@@ -234,7 +238,7 @@ class GameMech:
                     # Nova Posição
                     new_pos_y = pos_y + 1
                     new_pos_x = pos_x
-                    print(f"is obstacle: {self.is_obstacle('wall',new_pos_x,new_pos_y)}")
+                    print(f"is obstacle: {self.is_obstacle('wall', new_pos_x, new_pos_y)}")
                     if self.is_obstacle('wall', new_pos_x, new_pos_y):
                         new_pos_y = pos_y
 
@@ -258,7 +262,7 @@ class GameMech:
                     new_pos_y = pos_y
                 print(f"{new_pos_x}, {new_pos_y}")
                 return new_pos_x, new_pos_y
-                
+
     def print_pos(self, x: int, y: int):
         """
         Imprime o conteúdo de uma posição específica no mundo
@@ -282,3 +286,11 @@ class GameMech:
 
     def get_game_status(self):
         return self.game_over, self.winner
+
+    def save_maze_to_file(self):
+        maze_data = {f"{x},{y}": "A" if (x, y) == (1, 1) else "P" if (x, y) == self.finish else (
+            "1" if self.is_obstacle("wall", x, y) else "0") for x in range(self.x_max) for y in range(self.y_max)}
+        filename = f"Mazes/maze_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+        os.makedirs(os.path.dirname(filename), exist_ok=True)
+        with open(filename, 'w') as file:
+            json.dump(maze_data, file, indent=4)

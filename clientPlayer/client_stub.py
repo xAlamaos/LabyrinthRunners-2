@@ -27,7 +27,7 @@ class StubClient:
         y_max = int.from_bytes(value, byteorder="big", signed=True)
         print(y_max)
         return x_max, y_max
-    
+
     def get_players(self):
         """
         Envia uma mensagem ao servidor para obter os jogadores e retorne a lista de jogadores recebidos.
@@ -50,7 +50,7 @@ class StubClient:
         players = pickle.loads(data_bytes)
         print(players)
         return players
-        
+
     def get_nr_players(self):
         """
         Envia uma mensagem para o servidor para obter o número de jogadores e retornar o valor recebido.
@@ -61,7 +61,7 @@ class StubClient:
         value = self.s.recv(const.N_BYTES)
         nr_players = int.from_bytes(value, byteorder="big", signed=True)
         return nr_players
-    
+
     def get_obstacles(self):
         """
         Envia uma mensagem ao servidor para obter os obstáculos e retornar a lista de obstáculos recebidos.
@@ -85,7 +85,7 @@ class StubClient:
         obstacles = pickle.loads(data_bytes)
         print(obstacles)
         return obstacles
-    
+
     def get_nr_obstacles(self):
         """
         Envia uma mensagem ao servidor para obter o número de obstáculos e retornar o valor recebido.
@@ -96,14 +96,14 @@ class StubClient:
         value = self.s.recv(const.N_BYTES)
         nr_obstacles = int.from_bytes(value, byteorder="big", signed=True)
         return nr_obstacles
-    
+
     def get_finish(self):
         msg = const.get_finish
         self.s.send(msg.encode(const.STRING_ENCODING))
         data = self.s.recv(const.N_BYTES)
         finish = pickle.loads(data)  # Deserializing the received data
         return finish
-    
+
     def get_game_status(self):
         msg = const.get_status
         self.s.send(msg.encode(const.STRING_ENCODING))
@@ -146,7 +146,7 @@ class StubClient:
                 return decoded_data
         # Retorna uma posição padrão se nenhum dado for recebido ou se decoded_data for None
         return 0, 0
-    
+
     def add_player(self, name) -> int:
         """
         Adiciona um jogador ao jogo.

@@ -46,7 +46,7 @@ class MazeGenerator:
             for f in fs:
                 s.add(f)
         return self.grid
-        
+
     def frontier(self, x, y):
         """
         Encontra todas as fronteiras da célula dada.
@@ -55,15 +55,15 @@ class MazeGenerator:
         :return: Um conjunto contendo todas as fronteiras da célula
         """
         n = set()
-        if 1 <= x < self.width-1 and 1 <= y < self.height - 1:
+        if 1 <= x < self.width - 1 and 1 <= y < self.height - 1:
             if x > 1 and self.is_wall(self.grid[x - 2][y]):
-                n.add((x-2, y))
-            if x < self.width-3 and self.is_wall(self.grid[x + 2][y]):
-                n.add((x+2, y))
+                n.add((x - 2, y))
+            if x < self.width - 3 and self.is_wall(self.grid[x + 2][y]):
+                n.add((x + 2, y))
             if y > 1 and self.is_wall(self.grid[x][y - 2]):
-                n.add((x, y-2))
-            if y < self.height-3 and self.is_wall(self.grid[x][y + 2]):
-                n.add((x, y+2))
+                n.add((x, y - 2))
+            if y < self.height - 3 and self.is_wall(self.grid[x][y + 2]):
+                n.add((x, y + 2))
         return n
 
     def neighbours(self, x, y):
@@ -74,15 +74,15 @@ class MazeGenerator:
         :return: Um conjunto contendo todos os vizinhos da célula
         """
         n = set()
-        if 1 <= x < self.width-1 and 1 <= y < self.height - 1:
+        if 1 <= x < self.width - 1 and 1 <= y < self.height - 1:
             if x > 1 and not self.is_wall(self.grid[x - 2][y]):
-                n.add((x-2, y))
-            if x < self.width-3 and not self.is_wall(self.grid[x + 2][y]):
-                n.add((x+2, y))
+                n.add((x - 2, y))
+            if x < self.width - 3 and not self.is_wall(self.grid[x + 2][y]):
+                n.add((x + 2, y))
             if y > 1 and not self.is_wall(self.grid[x][y - 2]):
-                n.add((x, y-2))
-            if y < self.height-3 and not self.is_wall(self.grid[x][y + 2]):
-                n.add((x, y+2))
+                n.add((x, y - 2))
+            if y < self.height - 3 and not self.is_wall(self.grid[x][y + 2]):
+                n.add((x, y + 2))
         return n
 
     def is_wall(self, cell):

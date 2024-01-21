@@ -170,7 +170,8 @@ class GameUI(object):
 
             if not game_over:
                 self.walls.draw(self.screen)
-                self.draw_finish(r"pictures/portal.png")
+                if self.finish_cell is not None:
+                    self.draw_finish(r"pictures/portal.png")
                 self.players.update(self.stub)
                 self.players.draw(self.screen)
                 self.draw_grid(self.black)

@@ -32,7 +32,7 @@ class ClientHandler:
         print(y_max)
         # enviar a mensagem com esse valor
         s_c.send(y_max.to_bytes(const.N_BYTES, byteorder="big", signed=True))
-    
+
     def get_players(self, s_c):
         """
         Envia a lista de jogadores para o cliente
@@ -47,7 +47,7 @@ class ClientHandler:
 
         # Envia os bytes para o cliente
         s_c.sendall(data)
-    
+
     def get_nr_players(self, s_c):
         """
         Envia o número de jogadores para o cliente.
@@ -56,7 +56,7 @@ class ClientHandler:
         # pedir ao gm o nr de players
         nr_players = self.gm.get_nr_players()
         s_c.send(nr_players.to_bytes(const.N_BYTES, byteorder="big", signed=True))
-    
+
     def get_obstacles(self, s_c):
         """
         Envia a lista de obstáculos para o cliente.
@@ -71,7 +71,7 @@ class ClientHandler:
         s_c.sendall(length_bytes)
         # enviar a data
         s_c.sendall(data)
-    
+
     def get_nr_obstacles(self, s_c):
         """
         Envia o número de obstáculos para o cliente.
@@ -85,7 +85,7 @@ class ClientHandler:
         finish = self.gm.get_finish()
         data = pickle.dumps(finish)  # Serializing the tuple
         s_c.send(data)
-    
+
     def get_game_status(self, s_c):
         status = self.gm.get_game_status()
         data = pickle.dumps(status)  # Serializing the tuple
@@ -121,7 +121,7 @@ class ClientHandler:
         data = pickle.dumps(pos)
         # Send the serialized data with a sentinel value
         s_c.sendall(data + b"<END>")
-    
+
     def handle_client(self, socket_client):
 
         self.connected_clients[socket_client] = None
