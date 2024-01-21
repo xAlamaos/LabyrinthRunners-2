@@ -1,3 +1,4 @@
+import os
 import pickle
 import threading
 import const
@@ -184,3 +185,15 @@ class ClientHandler:
 
             print(f"Client disconnected: Player ID {player_index if player_index is not None else 'unknown'}",
                   flush=True)
+
+    def send_last_maze(self, s_c):
+        try:
+            last_maze_file = os.path.join(os.path.dirname(__file__), "last_maze.json")
+            with open(last_maze_file, 'rb') as file:
+                data = file.read()
+                length_bytes = len(data).to_bytes(4, byteorder='big')
+                s_c.sendall(length_bytes)
+                s_c.sendall(data)
+            print("File sent successfully")  # Debug message
+        except Exception as e:
+            print(f"Error sending file: {e}")  # Debug message
