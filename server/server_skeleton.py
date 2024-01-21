@@ -1,11 +1,8 @@
 # Seção de Importações
 import socket
-import logging
 import threading
 from game_mech import GameMech
-import pickle
 import const
-import concurrent.futures
 from client_handler import ClientHandler
 
 
@@ -25,8 +22,14 @@ class SkeletonServer:
     def run(self):
         while not self.stop:
             socket_client, address = self.s.accept()
+            print(f"Connection established with {address}")
             # Create an instance of the ClientHandler class and pass the clientPlayer socket
             client_handler = ClientHandler(self.gm)
+
+            # Send the last maze file to the client
+            client_handler.send_last_maze(socket_client)
+
+            # Handle client in a separate thread
             client_thread = threading.Thread(target=client_handler.handle_client, args=(socket_client,))
             client_thread.start()
 
