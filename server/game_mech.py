@@ -39,6 +39,7 @@ class GameMech:
         self.counting = 0
         self.game_over = False
         self.winner = None
+        self.seen_areas = set()
 
     def add_obstacle(self, types: str, x_pos: int, y_pos: int) -> bool:
         """
@@ -318,13 +319,26 @@ class GameMech:
         for y in range(self.y_max):
             row = []
             for x in range(self.x_max):
-                if self.is_obstacle("wall", x, y):
-                    row.append("1")
-                elif (x, y) == self.finish:
-                    row.append("P")
-                elif self.players and self.players[0][1] == (x, y):  # Assuming player[0] is the main player
-                    row.append("A")
+                # Determine if the cell should be visible or remembered
+                if y in [player_y - 1, player_y, player_y + 1] or y in [0, self.y_max - 1]:
+                    # Visible rows and exterior walls
+                    if self.is_obstacle("wall", x, y):
+                        row.append("1")
+                    elif (x, y) == self.finish:
+                        row.append("P")
+                    elif self.players and self.players[0][1] == (x, y):  # Assuming player[0] is the main player
+                        row.append("A")
+                    else:
+                        row.append("0")
+                    self.seen_areas.add((x, y))  # Remember this seen area
                 else:
-                    row.append("0")
+                    # Check if the area was seen before
+                    if (x, y) in self.seen_areas:
+                        # Show as empty or wall if this area was seen before
+                        row.append("0" if not self.is_obstacle("wall", x, y) else "1")
+                    else:
+                        # Unknown spaces
+                        row.append("?")
             maze_representation.append("".join(row))
         return "\n".join(maze_representation)
+

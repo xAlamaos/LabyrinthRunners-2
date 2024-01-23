@@ -132,7 +132,7 @@ class StubClient:
             if not chunk:
                 break
             received_data.extend(chunk)
-            print("Received Chunk:", chunk)  # Imprime o chunk recebido para 'debug'
+            # print("Received Chunk:", chunk)  # Imprime o chunk recebido para 'debug'
             if b"<END>" in received_data:
                 break
 
@@ -141,7 +141,7 @@ class StubClient:
             received_data = received_data.replace(b"<END>", b"")
             # Desserializa os dados
             decoded_data = pickle.loads(received_data)
-            print(decoded_data)
+            # print(decoded_data)
             if decoded_data is not None:
                 return decoded_data
         # Retorna uma posição padrão se nenhum dado for recebido ou se decoded_data for None
