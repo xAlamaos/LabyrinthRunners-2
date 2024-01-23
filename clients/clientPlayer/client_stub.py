@@ -9,8 +9,6 @@ class StubClient:
     def __init__(self):
         self.s: socket = socket.socket()
         self.s.connect((const.ADDRESS, const.PORT))
-        # Receive the last maze file right after connecting
-        self.receive_last_maze()
 
     def dimension_size(self):
         """
@@ -165,14 +163,15 @@ class StubClient:
         nr_player = int.from_bytes(value, byteorder="big", signed=True)
         return nr_player
 
-    def receive_last_maze(self):
-        try:
-            length_bytes = self.s.recv(4)
-            length = int.from_bytes(length_bytes, byteorder='big')
-            data = self.s.recv(length)
+    def request_maze(self):
+        """
+        Requests the current maze representation from the server and saves it as 'maze.json'.
+        """
+        msg = "get_maze"
+        self.s.send(msg.encode(const.STRING_ENCODING))
+        data = self.s.recv(4096)  # Adjust buffer size as needed
+        maze_representation = data.decode(const.STRING_ENCODING)
 
-            with open("last_maze.json", 'wb') as file:
-                file.write(data)
-            print("File received successfully")  # Debug message
-        except Exception as e:
-            print(f"Error receiving file: {e}")  # Debug message
+        # Save to a file
+        with open("maze.json", "w") as file:
+            file.write(maze_representation)
