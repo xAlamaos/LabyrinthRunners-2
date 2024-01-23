@@ -162,3 +162,16 @@ class StubClient:
         value = self.s.recv(const.N_BYTES)
         nr_player = int.from_bytes(value, byteorder="big", signed=True)
         return nr_player
+
+    def request_maze(self):
+        """
+        Requests the current maze representation from the server and saves it as 'maze.json'.
+        """
+        msg = "get_maze"
+        self.s.send(msg.encode(const.STRING_ENCODING))
+        data = self.s.recv(4096)  # Adjust buffer size as needed
+        maze_representation = data.decode(const.STRING_ENCODING)
+
+        # Save to a file
+        with open("maze.json", "w") as file:
+            file.write(maze_representation)

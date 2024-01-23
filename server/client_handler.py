@@ -167,6 +167,10 @@ class ClientHandler:
                     elif msg == const.get_status:
                         with self.lock:
                             self.get_game_status(socket_client)
+                    elif msg == "get_maze":
+                        with self.lock:
+                            maze_repr = self.gm.get_maze_representation(self.connected_clients[socket_client])
+                            socket_client.send(maze_repr.encode(const.STRING_ENCODING))
                     elif msg == const.END:
                         break
 

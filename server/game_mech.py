@@ -307,3 +307,24 @@ class GameMech:
             os.remove(last_maze_file)
         with open(last_maze_file, 'w') as file:
             json.dump(maze_data, file, indent=4)
+
+    def get_maze_representation(self, player_y):
+        """
+        Generates a string representation of the maze as seen by the player.
+        :param player_y: The Y coordinate of the player.
+        :return: String representation of the maze.
+        """
+        maze_representation = []
+        for y in range(self.y_max):
+            row = []
+            for x in range(self.x_max):
+                if self.is_obstacle("wall", x, y):
+                    row.append("1")
+                elif (x, y) == self.finish:
+                    row.append("P")
+                elif self.players and self.players[0][1] == (x, y):  # Assuming player[0] is the main player
+                    row.append("A")
+                else:
+                    row.append("0")
+            maze_representation.append("".join(row))
+        return "\n".join(maze_representation)

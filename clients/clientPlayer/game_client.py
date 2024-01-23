@@ -38,6 +38,7 @@ class GameUI(object):
         self.visited_y_coords = set()
 
         self.draw_grid(self.black)
+        self.last_player_y = 0
 
     def draw_grid(self, colour: tuple):
         current_player_y = None
@@ -158,6 +159,14 @@ class GameUI(object):
                     # Enviar informação "desconectado"
                     # Se a resposta for ok, então end é verdadeiro
                     end = True
+
+            # Get the current Y-coordinate of the player
+            new_y = self.players_dict[self.player_id].rect.y // self.grid_size
+
+            # Check if the player has moved down and request maze data
+            if new_y > self.last_player_y:
+                self.stub.request_maze()
+                self.last_player_y = new_y
 
             new_nr_players = self.stub.get_nr_players()
             if new_nr_players > nr_players:
