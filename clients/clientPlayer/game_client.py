@@ -39,6 +39,7 @@ class GameUI(object):
 
         self.draw_grid(self.black)
         self.last_player_y = 0
+        self.last_player_x = 0
 
     def draw_grid(self, colour: tuple):
         current_player_y = None
@@ -160,13 +161,15 @@ class GameUI(object):
                     # Se a resposta for ok, então end é verdadeiro
                     end = True
 
-            # Get the current Y-coordinate of the player
-            new_y = self.players_dict[self.player_id].rect.y // self.grid_size
+            # Get the current coordinates of the player
+            current_x = self.players_dict[self.player_id].rect.x // self.grid_size
+            current_y = self.players_dict[self.player_id].rect.y // self.grid_size
 
-            # Check if the player has moved down and request maze data
-            if new_y > self.last_player_y:
+            # Request maze data from the server if the player moves within the known areas
+            if (current_x, current_y) != (self.last_player_x, self.last_player_y):
                 self.stub.request_maze()
-                self.last_player_y = new_y
+                self.last_player_x = current_x
+                self.last_player_y = current_y
 
             new_nr_players = self.stub.get_nr_players()
             if new_nr_players > nr_players:

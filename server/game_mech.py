@@ -311,7 +311,8 @@ class GameMech:
 
     def get_maze_representation(self, player_y):
         """
-        Generates a string representation of the maze as seen by the player.
+        Generates a string representation of the maze as seen by the player,
+        updating known areas when the player is around.
         :param player_y: The Y coordinate of the player.
         :return: String representation of the maze.
         """
@@ -319,9 +320,10 @@ class GameMech:
         for y in range(self.y_max):
             row = []
             for x in range(self.x_max):
-                # Determine if the cell should be visible or remembered
-                if y in [player_y - 1, player_y, player_y + 1] or y in [0, self.y_max - 1]:
-                    # Visible rows and exterior walls
+                is_visible = y in [player_y - 1, player_y, player_y + 1] or y in [0, self.y_max - 1]
+
+                # Visible rows and exterior walls
+                if is_visible:
                     if self.is_obstacle("wall", x, y):
                         row.append("1")
                     elif (x, y) == self.finish:
@@ -331,14 +333,14 @@ class GameMech:
                     else:
                         row.append("0")
                     self.seen_areas.add((x, y))  # Remember this seen area
+
+                # Previously seen but not currently visible areas
+                elif (x, y) in self.seen_areas:
+                    row.append("0" if not self.is_obstacle("wall", x, y) else "1")
+
+                # Unknown spaces
                 else:
-                    # Check if the area was seen before
-                    if (x, y) in self.seen_areas:
-                        # Show as empty or wall if this area was seen before
-                        row.append("0" if not self.is_obstacle("wall", x, y) else "1")
-                    else:
-                        # Unknown spaces
-                        row.append("?")
+                    row.append("?")
+
             maze_representation.append("".join(row))
         return "\n".join(maze_representation)
-
