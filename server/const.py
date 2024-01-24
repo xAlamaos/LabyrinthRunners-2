@@ -23,4 +23,3 @@ M_RIGHT = 1
 M_DOWN = 2
 M_LEFT = 3
 TIME_STEP = 7.5
-

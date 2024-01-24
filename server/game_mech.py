@@ -352,7 +352,7 @@ class GameMech:
                         row.append("A")
                     else:
                         row.append("0")
-                    self.seen_areas.add((x, y))  # Remember this seen area
+                    self.seen_areas.add((x, y))  # Remember this known area
 
                 # Previously seen but not currently visible areas
                 elif (x, y) in self.seen_areas:
