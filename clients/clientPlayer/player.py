@@ -58,7 +58,7 @@ class Player(pygame.sprite.DirtySprite):
         :return: None
         """
         # last = self.rect.copy()
-        print("Updating player ", self.name, " with the number ", self.number)
+        # print("Updating player ", self.name, " with the number ", self.number)
         key = pygame.key.get_pressed()
         if key[pygame.K_LEFT]:
             pos = stub.execute(co.M_LEFT, "player", self.number)

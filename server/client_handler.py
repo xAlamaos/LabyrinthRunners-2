@@ -167,6 +167,12 @@ class ClientHandler:
                     elif msg == const.get_status:
                         with self.lock:
                             self.get_game_status(socket_client)
+                    elif msg.startswith("get_maze"):
+                        with self.lock:
+                            player_number = self.connected_clients[socket_client]
+                            player_y = self.gm.players[player_number][1][1]  # Access the player's Y-coordinate
+                            maze_repr = self.gm.get_maze_representation(player_y)
+                            socket_client.send(maze_repr.encode(const.STRING_ENCODING))
                     elif msg == const.END:
                         break
 
