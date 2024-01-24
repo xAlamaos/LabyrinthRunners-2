@@ -288,19 +288,35 @@ class GameMech:
     def get_game_status(self):
         return self.game_over, self.winner
 
+    def get_full_maze_representation(self):
+        """
+        Generates a full string representation of the maze including the player's initial position.
+        :return: List of strings, each representing a row of the maze.
+        """
+        maze_representation = []
+        for y in range(self.y_max):
+            row = []
+            for x in range(self.x_max):
+                if x == 1 and y == 1:
+                    row.append("A")  # Player's initial position
+                elif self.is_obstacle("wall", x, y):
+                    row.append("1")
+                elif (x, y) == self.finish:
+                    row.append("P")
+                else:
+                    row.append("0")
+            maze_representation.append("".join(row))
+        return maze_representation
+
     def save_maze_to_file(self):
-        maze_data = self.prepare_maze_data()
+        maze_data = self.get_full_maze_representation()
         history_folder = os.path.join(os.path.dirname(__file__), "MazeHistory")
         os.makedirs(history_folder, exist_ok=True)
-        filename = os.path.join(history_folder, f"maze_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json")
+        filename = os.path.join(history_folder, f"maze_{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.json")
         with open(filename, 'w') as file:
             json.dump(maze_data, file, indent=4)
 
         self.save_last_maze(maze_data)
-
-    def prepare_maze_data(self):
-        return {f"{x},{y}": "A" if (x, y) == (1, 1) else "P" if (x, y) == self.finish else (
-            "1" if self.is_obstacle("wall", x, y) else "0") for x in range(self.x_max) for y in range(self.y_max)}
 
     def save_last_maze(self, maze_data):
         last_maze_file = os.path.join(os.path.dirname(__file__), "last_maze.json")
@@ -309,9 +325,14 @@ class GameMech:
         with open(last_maze_file, 'w') as file:
             json.dump(maze_data, file, indent=4)
 
+    def prepare_maze_data(self):
+        return {f"{x},{y}": "A" if (x, y) == (1, 1) else "P" if (x, y) == self.finish else (
+            "1" if self.is_obstacle("wall", x, y) else "0") for x in range(self.x_max) for y in range(self.y_max)}
+
     def get_maze_representation(self, player_y):
         """
-        Generates a string representation of the maze as seen by the player.
+        Generates a string representation of the maze as seen by the player,
+        updating known areas when the player is around.
         :param player_y: The Y coordinate of the player.
         :return: String representation of the maze.
         """
@@ -319,9 +340,10 @@ class GameMech:
         for y in range(self.y_max):
             row = []
             for x in range(self.x_max):
-                # Determine if the cell should be visible or remembered
-                if y in [player_y - 1, player_y, player_y + 1] or y in [0, self.y_max - 1]:
-                    # Visible rows and exterior walls
+                is_visible = y in [player_y - 1, player_y, player_y + 1] or y in [0, self.y_max - 1]
+
+                # Visible rows and exterior walls
+                if is_visible:
                     if self.is_obstacle("wall", x, y):
                         row.append("1")
                     elif (x, y) == self.finish:
@@ -331,14 +353,14 @@ class GameMech:
                     else:
                         row.append("0")
                     self.seen_areas.add((x, y))  # Remember this seen area
+
+                # Previously seen but not currently visible areas
+                elif (x, y) in self.seen_areas:
+                    row.append("0" if not self.is_obstacle("wall", x, y) else "1")
+
+                # Unknown spaces
                 else:
-                    # Check if the area was seen before
-                    if (x, y) in self.seen_areas:
-                        # Show as empty or wall if this area was seen before
-                        row.append("0" if not self.is_obstacle("wall", x, y) else "1")
-                    else:
-                        # Unknown spaces
-                        row.append("?")
+                    row.append("?")
+
             maze_representation.append("".join(row))
         return "\n".join(maze_representation)
-
