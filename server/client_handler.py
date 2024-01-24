@@ -102,7 +102,7 @@ class ClientHandler:
         nr_player = self.gm.add_player(name, 1, 1, 100)
         s_c.send(nr_player.to_bytes(const.N_BYTES, byteorder="big", signed=True))
 
-        # Assign this new player to the connected clientPlayer
+        # Assign this new player to the connected clientP
         self.connected_clients[s_c] = nr_player
         self.connected_players[nr_player] = s_c
 
@@ -180,7 +180,7 @@ class ClientHandler:
             print(f"Erro ao lidar com o cliente: {e}", flush=True)
 
         finally:
-            # Cleanup resources and disconnect clientPlayer
+            # Cleanup resources and disconnect clientP
             player_index = self.connected_clients[socket_client]
             socket_client.close()
             del self.connected_clients[socket_client]

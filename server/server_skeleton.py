@@ -23,7 +23,7 @@ class SkeletonServer:
         while not self.stop:
             socket_client, address = self.s.accept()
             print(f"Connection established with {address}")
-            # Create an instance of the ClientHandler class and pass the clientPlayer socket
+            # Create an instance of the ClientHandler class and pass the clientP socket
             client_handler = ClientHandler(self.gm)
 
             # Handle client in a separate thread

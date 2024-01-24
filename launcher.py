@@ -2,7 +2,7 @@ import subprocess
 
 
 def launch_server():
-    subprocess.Popen(["python3", "clientPlayer/main_client.py"])
+    subprocess.Popen(["python3", "clientP/main_client.py"])
 
 
 def launch_client():
