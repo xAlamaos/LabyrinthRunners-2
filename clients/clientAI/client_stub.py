@@ -15,17 +15,17 @@ class StubClient:
         Envia uma mensagem ao servidor para obter o tamanho das dimensões do jogo e retornar os valores recebidos.
         :return: Valores x_max e y_max recebidos do servidor
         """
-        print("getting dimensions")
+        # print("getting dimensions")
         msg = const.X_MAX
         self.s.send(msg.encode(const.STRING_ENCODING))
         value = self.s.recv(const.N_BYTES)
         x_max = int.from_bytes(value, byteorder="big", signed=True)
-        print(x_max)
+        # print(x_max)
         msg = const.Y_MAX
         self.s.send(msg.encode(const.STRING_ENCODING))
         value = self.s.recv(const.N_BYTES)
         y_max = int.from_bytes(value, byteorder="big", signed=True)
-        print(y_max)
+        # print(y_max)
         return x_max, y_max
 
     def get_players(self):
@@ -111,6 +111,35 @@ class StubClient:
         finish = pickle.loads(data)  # Deserializing the received data
         return finish
 
+    def add_player(self, name) -> int:
+        """
+        Adiciona um jogador ao jogo.
+        :param name: Uma ‘string’ representando o nome do jogador.
+        :return: Um inteiro representando o número do jogador.
+        """
+        msg = const.new_Player
+        if len(name) < 3:
+            msg += name
+        print(msg)
+        print(msg[0:2])
+        self.s.send(msg.encode(const.STRING_ENCODING))
+        value = self.s.recv(const.N_BYTES)
+        nr_player = int.from_bytes(value, byteorder="big", signed=True)
+        return nr_player
+
+    def request_maze(self):
+        """
+        Requests the current maze representation from the server and saves it as 'maze.json'.
+        """
+        msg = "get_maze"
+        self.s.send(msg.encode(const.STRING_ENCODING))
+        data = self.s.recv(4096)  # Adjust buffer size as needed
+        maze_representation = data.decode(const.STRING_ENCODING)
+
+        # Save to a file
+        with open("maze.json", "w") as file:
+            file.write(maze_representation)
+
     def execute(self, move: int, types: str, nr_player: int):
         """
         Executa uma jogada para o jogo
@@ -146,32 +175,3 @@ class StubClient:
                 return decoded_data
         # Retorna uma posição padrão se nenhum dado for recebido ou se decoded_data for None
         return 0, 0
-
-    def add_player(self, name) -> int:
-        """
-        Adiciona um jogador ao jogo.
-        :param name: Uma ‘string’ representando o nome do jogador.
-        :return: Um inteiro representando o número do jogador.
-        """
-        msg = const.new_Player
-        if len(name) < 3:
-            msg += name
-        print(msg)
-        print(msg[0:2])
-        self.s.send(msg.encode(const.STRING_ENCODING))
-        value = self.s.recv(const.N_BYTES)
-        nr_player = int.from_bytes(value, byteorder="big", signed=True)
-        return nr_player
-
-    def request_maze(self):
-        """
-        Requests the current maze representation from the server and saves it as 'maze.json'.
-        """
-        msg = "get_maze"
-        self.s.send(msg.encode(const.STRING_ENCODING))
-        data = self.s.recv(4096)  # Adjust buffer size as needed
-        maze_representation = data.decode(const.STRING_ENCODING)
-
-        # Save to a file
-        with open("maze.json", "w") as file:
-            file.write(maze_representation)

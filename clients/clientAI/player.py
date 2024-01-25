@@ -1,4 +1,6 @@
 # Seção de Importações
+import random
+
 import pygame
 import client_stub
 import const as co
@@ -77,5 +79,25 @@ class Player(pygame.sprite.DirtySprite):
             if self.rect.y != pos[1]:
                 self.rect.y = pos[1] * self.sq_size
 
+        # AI Logic for Moves
+        if self.name == "AI":
+            ai_move = self.explore(stub)
+            if ai_move == 'left':
+                # Implement AI logic for moving left
+                self.rect.x -= self.sq_size
+            elif ai_move == 'right':
+                # Implement AI logic for moving right
+                self.rect.x += self.sq_size
+            elif ai_move == 'up':
+                # Implement AI logic for moving up
+                self.rect.y -= self.sq_size
+            elif ai_move == 'down':
+                # Implement AI logic for moving down
+                self.rect.y += self.sq_size
+
         # Keep visible
         self.dirty = 1
+
+    def explore(self, stub: client_stub.StubClient):
+        # Implement AI logic for exploring the maze
+        return random.choice(['left', 'right', 'up', 'down'])

@@ -3,14 +3,9 @@ import pygame
 from wall import Wall
 from player import Player
 import client_stub
-
-"""
-A grelha agora é construída com base no número de quadrados em x e y.
-Isso nos permite associar o tamanho do espaço a uma matriz ou a um dicionário
-que manterá os dados sobre cada posição no ambiente.
-Além disso, agora podemos controlar o movimento dos objetos.
-Agora separamos o controlo do ambiente
-"""
+import json
+import os
+from simulated_annealing import SimulatedAnnealing
 
 
 class GameUI(object):
@@ -142,6 +137,9 @@ class GameUI(object):
 
         self.finish_cell = self.stub.get_finish()
 
+        # Initialize Simulated Annealing component
+        sa = SimulatedAnnealing()
+
         while not end:
 
             game_over, winner = self.stub.get_game_status()
@@ -170,6 +168,21 @@ class GameUI(object):
                 self.stub.request_maze()
                 self.last_player_x = current_x
                 self.last_player_y = current_y
+
+            # Load and update maze from maze.json
+            current_maze = self.load_maze()
+
+            if 'P' in current_maze:  # If portal is visible
+                goal_x, goal_y = self.find_portal(current_maze)
+                path_to_portal = sa.find_path(current_maze, (current_x, current_y), (goal_x, goal_y))
+                # Execute moves along the path
+                for move in path_to_portal:
+                    self.stub.execute(move, "player", self.player_id)
+            else:
+                # AI logic to discover more parts of the map
+                # Assuming AI has a method to decide the next move
+                next_move = sa.explore(current_maze, (current_x, current_y))
+                self.stub.execute(next_move, "player", self.player_id)
 
             new_nr_players = self.stub.get_nr_players()
             if new_nr_players > nr_players:
@@ -203,3 +216,15 @@ class GameUI(object):
                 self.screen.blit(text, text_rect)
                 pygame.display.flip()
         return True
+
+    def load_maze(self):
+        with open('maze.json', 'r') as file:
+            maze = json.load(file)
+        return maze
+
+    def find_portal(self, maze):
+        for y, row in enumerate(maze):
+            for x, cell in enumerate(row):
+                if cell == 'P':
+                    return x, y
+        return None, None
